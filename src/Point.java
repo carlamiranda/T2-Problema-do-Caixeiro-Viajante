@@ -17,11 +17,20 @@ import algs4.StdIn;
 public class Point { 
     private final double x;   // coordenada cartesiana x
     private final double y;   // coordenada cartesiana y
-   
+
     // cria e inicializa um ponto com (x, y) dados
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    // getters necessários para KdTree
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
     }
 
     // retorna a distância euclidiana entre dois pontos

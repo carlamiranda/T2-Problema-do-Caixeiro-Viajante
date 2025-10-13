@@ -1,3 +1,4 @@
+import algs4.Point2D;
 import algs4.StdDraw;
 import algs4.StdOut;
 
@@ -11,16 +12,21 @@ public class Tour {
     private Node start;
     private int count;
     private final boolean useKdTree;
+    private KdTree tree;
+
 
     public Tour() {
         this(false);
     }
 
     public Tour(boolean useKdTree) {
-        this.useKdTree = useKdTree;
-        this.start = null;
-        this.count = 0;
+    this.useKdTree = useKdTree;
+    this.start = null;
+    this.count = 0;
+    if (useKdTree) {
+        this.tree = new KdTree();
     }
+}
 
     public Tour(Point a, Point b, Point c, Point d) {
         this();
@@ -81,12 +87,68 @@ public class Tour {
     }
 
     public void insertNearestNaive(Point p) {
-        throw new UnsupportedOperationException("Versão com KdTree não implementada.");
+        // <<< implementação correta >>>
+        if (start == null) {
+            start = new Node();
+            start.point = p;
+            start.next = start; // circular
+            count = 1;
+            return;
+        }
+
+        Node nearest = start;
+        double minDist = p.distanceTo(start.point);
+
+        Node current = start.next;
+        while (current != start) {
+            double dist = p.distanceTo(current.point);
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = current;
+            }
+            current = current.next;
+        }
+
+        Node newNode = new Node();
+        newNode.point = p;
+        newNode.next = nearest.next;
+        nearest.next = newNode;
+
+        count++;
     }
 
     public void insertNearestKd(Point p) {
-        throw new UnsupportedOperationException("Versão com lista não implementada.");
+        if (start == null) {
+            start = new Node();
+            start.point = p;
+            start.next = start; // circular
+            count = 1;
+            tree.insert(new Point2D(p.x(), p.y()));
+            return;
+        }
+
+        // encontra o ponto mais próximo via KdTree
+        Point2D nearest2D = tree.nearest(new Point2D(p.x(), p.y()));
+        Point nearestPoint = new Point(nearest2D.x(), nearest2D.y());
+
+        // percorre a lista circular para achar o Node correspondente
+        Node current = start;
+        while (!current.point.equals(nearestPoint)) {
+            current = current.next;
+        }
+
+        // insere o novo ponto após o vizinho mais próximo
+        Node newNode = new Node();
+        newNode.point = p;
+        newNode.next = current.next;
+        current.next = newNode;
+
+        count++;
+
+        // adiciona o ponto na KdTree
+        tree.insert(new Point2D(p.x(), p.y()));
     }
+
 
     // Método de teste (opcional)
     public static void main(String[] args) {

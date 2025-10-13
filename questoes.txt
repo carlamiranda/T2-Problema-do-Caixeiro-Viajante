@@ -6,8 +6,8 @@ Orientador: Prof. Me Ricardo Carubbi
 Trabalho: Problema do Caixeiro Viajante
 
 Informe abaixo o(s) nome(s):
-- Aluno(a) 1: ______________________________
-- Aluno(a) 2: ______________________________
+- Aluno(a) 1: Anna Lara Magalhães
+- Aluno(a) 2: Carla Miranda de Souza
 
 Q1. Explique como você implementou a heurística de inserção pelo vizinho mais próximo.
 Comente também como você atualiza as ligações da lista encadeada circular após inserir o novo ponto.
