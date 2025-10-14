@@ -1,11 +1,13 @@
 import algs4.Point2D;
 import algs4.StdDraw;
 import algs4.StdOut;
+import java.util.HashMap;
 
 public class Tour {
 
     private static class Node {
         private Point point;
+        private Point2D point2D;
         private Node next;
     }
 
@@ -13,6 +15,7 @@ public class Tour {
     private int count;
     private final boolean useKdTree;
     private KdTree tree;
+    private HashMap<Point2D, Node> point2DToNodeMap;
 
 
     public Tour() {
@@ -25,6 +28,7 @@ public class Tour {
     this.count = 0;
     if (useKdTree) {
         this.tree = new KdTree();
+        this.point2DToNodeMap = new HashMap<>();
     }
 }
 
@@ -118,35 +122,35 @@ public class Tour {
     }
 
     public void insertNearestKd(Point p) {
+        Point2D newPoint2D = new Point2D(p.x(), p.y());
         if (start == null) {
             start = new Node();
             start.point = p;
+            start.point2D = newPoint2D;
             start.next = start; // circular
+            tree.insert(newPoint2D);
+            point2DToNodeMap.put(newPoint2D, start);
             count = 1;
-            tree.insert(new Point2D(p.x(), p.y()));
             return;
         }
 
-        // encontra o ponto mais próximo via KdTree
-        Point2D nearest2D = tree.nearest(new Point2D(p.x(), p.y()));
-        Point nearestPoint = new Point(nearest2D.x(), nearest2D.y());
+        // 1. Encontra o Point2D mais próximo via KdTree (rápido: O(log N))
+        Point2D nearestPoint2D = tree.nearest(newPoint2D);
 
-        // percorre a lista circular para achar o Node correspondente
-        Node current = start;
-        while (!current.point.equals(nearestPoint)) {
-            current = current.next;
-        }
+        // 2. Encontra o NÓ correspondente via HashMap (super-rápido: O(1))
+        Node nearestNode = point2DToNodeMap.get(nearestPoint2D);
 
-        // insere o novo ponto após o vizinho mais próximo
+        // 3. Insere o novo nó após o vizinho mais próximo
         Node newNode = new Node();
         newNode.point = p;
-        newNode.next = current.next;
-        current.next = newNode;
+        newNode.point2D = newPoint2D;
+        newNode.next = nearestNode.next;
+        nearestNode.next = newNode;
 
+        // 4. Atualiza as estruturas de dados
         count++;
-
-        // adiciona o ponto na KdTree
-        tree.insert(new Point2D(p.x(), p.y()));
+        tree.insert(newPoint2D);
+        point2DToNodeMap.put(newPoint2D, newNode); // Adiciona o novo mapeamento
     }
 
 

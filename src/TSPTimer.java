@@ -15,30 +15,49 @@
  **************************************************************************** */
 
  import algs4.StdRandom;
- import algs4.Stopwatch;
- import algs4.StdOut;
- 
- public class TSPTimer {
- 
-     public static void main(String[] args) {
-         double lo = 0.0;
-         double hi = 600.0;
-         int n = Integer.parseInt(args[0]);
- 
-        // gerar dados e executar a heurística de inserção pelo vizinho mais próximo
-        StdRandom.setSeed(123456789L);
-        Stopwatch timer1 = new Stopwatch();
-        Tour tour1 = new Tour();
+import algs4.Stopwatch;
+import algs4.StdOut;
+
+public class TSPTimer {
+
+    public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]);
+        StdRandom.setSeed(123456789L); 
+
+        // Gera n pontos aleatórios para usar em ambos os testes
+        Point[] points = new Point[n];
         for (int i = 0; i < n; i++) {
-            double x = StdRandom.uniformDouble(lo, hi);
-            double y = StdRandom.uniformDouble(lo, hi);
-            Point p = new Point(x, y);
-            tour1.insertNearest(p);
+            double x = StdRandom.uniformDouble(0.0, 1000.0);
+            double y = StdRandom.uniformDouble(0.0, 1000.0);
+            points[i] = new Point(x, y);
         }
-        double length1 = tour1.length();
-        double elapsed1 = timer1.elapsedTime();
-        StdOut.println("Comprimento do ciclo = " + length1);
-        StdOut.println("Inserção pelo vizinho mais próximo: " + elapsed1 + " segundos");
+
+
+        
+        // // --- 1. Teste da abordagem ingênua (sem KdTree) ---
+        // Stopwatch timerNaive = new Stopwatch();
+        // Tour tourNaive = new Tour(false); 
+        // for (Point p : points) {
+        //     tourNaive.insertNearest(p);
+        // }
+        // double timeNaive = timerNaive.elapsedTime();
+        
+        // StdOut.printf("Para n = %d\n", n);
+        // StdOut.println("-------------------------------------------------");
+        // StdOut.printf("Tempo (s) ingênuo:             %.4f\n", timeNaive);
+
+
+
+
+        // --- 2. Teste da abordagem com KdTree ---
+        Stopwatch timerKdTree = new Stopwatch();
+        Tour tourKdTree = new Tour(true); // O 'true' ativa a KdTree
+        for (Point p : points) {
+            tourKdTree.insertNearest(p);
+        }
+        double timeKdTree = timerKdTree.elapsedTime();
+
+        StdOut.printf("Tempo (s) com KdTree:          %.4f\n", timeKdTree);
+        StdOut.println(); 
     }
 }
- 
