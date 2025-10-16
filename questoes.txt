@@ -12,23 +12,31 @@ Informe abaixo o(s) nome(s):
 Q1. Explique como você implementou a heurística de inserção pelo vizinho mais próximo.
 Comente também como você atualiza as ligações da lista encadeada circular após inserir o novo ponto.
 
-Resposta:
+Resposta: Implementamos a heurística do vizinho mais próximo de duas formas: ingênua e usando kdtree. Na kdtree, para cada ponto 
+novo, a árvore é percorrida comparando alternadamente as coordenadas x e y em cada nível: se a coordenada do novo 
+ponto for menor que a do nó, exploramos a subárvore esquerda; se for maior, exploramos a direita. Se houver chance de encontrar 
+um ponto mais próximo na outra subárvore, também verificamos. Depois de achar o ponto mais próximo, criamos um novo nó para o 
+ponto e atualizamos a lista circular: o novo nó aponta para o próximo do vizinho e o vizinho passa a apontar para o novo nó, 
+mantendo o ciclo fechado.
 
 
 Q2. Explique por que é melhor usar uma lista encadeada circular em vez de um vetor.
 Considere a complexidade das operações de inserção e remoção de pontos.
 
-Resposta:
+Resposta: Usamos uma lista encadeada circular porque facilita a inserção de novos pontos no ciclo. Com um vetor, 
+para inserir ou remover um ponto no meio ou no início, é preciso deslocar todos os outros elementos, o que custa O(n). 
+Na lista circular, só precisa ajustar as ligações do ponto anterior e do novo ponto para manter o ciclo fechado, o que custa O(1). 
+Além disso, ela permite percorrer o ciclo sem se preocupar com o final, já que o último ponto aponta para o primeiro.
 
 
 Q3. Preencha os comprimentos calculados pela heurística do vizinho mais próximo.
 
 | Arquivo de dados | Vizinho mais próximo |
 | ---------------- | -------------------- |
-| tsp10.txt        |                      |
-| tsp100.txt       |                      |
-| tsp1000.txt      |                      |
-| usa13509.txt     |                      |
+| tsp10.txt        |       1566.1363      |
+| tsp100.txt       |       7389.9297      |
+| tsp1000.txt      |       27868.7106     |
+| usa13509.txt     |       77449.9794     |
 
 Q4. Realize a análise de tempo abaixo:
 
@@ -38,14 +46,14 @@ Q4. Realize a análise de tempo abaixo:
 
 | n      | Tempo (s) ingênuo | Tempo (s) com KdTree |
 | ------ | ----------------- | -------------------- |
-| 1000   |                   |                      |
-| 2000   |                   |                      |
-| 4000   |                   |                      |
-| 8000   |                   |                      |
-| 16000  |                   |                      |
-| 32000  |                   |                      |
-| 64000  |                   |                      |
-| 128000 |                   |                      |
-| 256000 |                   |                      |
-| 512000 |                   |                      |
-| 1024000|                   |                      |
+| 1000   |   0.048 segundos  |   0.035 segundos     |
+| 2000   |   0.120 segundos  |   0.051 segundos     |
+| 4000   |   0.445 segundos  |   0.090 segundos     |
+| 8000   |   1.809 segundos  |   0.185 segundos     |
+| 16000  |   7.774 segundos  |   0.399 segundos     |
+| 32000  |   28.105 segundos |   0.835 segundos     |
+| 64000  |  114.02 segundos  |   1.771 segundos     |
+| 128000 |                   |   3.921 segundos     |
+| 256000 |                   |   7.928 segundos     |
+| 512000 |                   |   16.871 segundos    |
+| 1024000|                   |   42.801 segundos    |
