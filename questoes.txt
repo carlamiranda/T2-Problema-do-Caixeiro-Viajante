@@ -12,13 +12,21 @@ Informe abaixo o(s) nome(s):
 Q1. Explique como você implementou a heurística de inserção pelo vizinho mais próximo.
 Comente também como você atualiza as ligações da lista encadeada circular após inserir o novo ponto.
 
-Resposta:
+Resposta: Implementamos a heurística do vizinho mais próximo de duas formas: ingênua e usando kdtree. Na kdtree, para cada ponto 
+novo, a árvore é percorrida comparando alternadamente as coordenadas x e y em cada nível: se a coordenada do novo 
+ponto for menor que a do nó, exploramos a subárvore esquerda; se for maior, exploramos a direita. Se houver chance de encontrar 
+um ponto mais próximo na outra subárvore, também verificamos. Depois de achar o ponto mais próximo, criamos um novo nó para o 
+ponto e atualizamos a lista circular: o novo nó aponta para o próximo do vizinho e o vizinho passa a apontar para o novo nó, 
+mantendo o ciclo fechado.
 
 
 Q2. Explique por que é melhor usar uma lista encadeada circular em vez de um vetor.
 Considere a complexidade das operações de inserção e remoção de pontos.
 
-Resposta:
+Resposta: Usamos uma lista encadeada circular porque facilita a inserção de novos pontos no ciclo. Com um vetor, 
+para inserir ou remover um ponto no meio ou no início, é preciso deslocar todos os outros elementos, o que custa O(n). 
+Na lista circular, só precisa ajustar as ligações do ponto anterior e do novo ponto para manter o ciclo fechado, o que custa O(1). 
+Além disso, ela permite percorrer o ciclo sem se preocupar com o final, já que o último ponto aponta para o primeiro.
 
 
 Q3. Preencha os comprimentos calculados pela heurística do vizinho mais próximo.
