@@ -123,7 +123,7 @@ public class Tour {
     
     public void insertNearestKd(Point p) {
         Point2D p2d = new Point2D(p.x(), p.y());
-
+        // Se a lista estiver vazia, cria o primeiro Node (raiz) da tour, insere o ponto, mantém a circularidade e atualiza KD-Tree e HashMap
         if (start == null) {
             start = new Node();
             start.point = p;
