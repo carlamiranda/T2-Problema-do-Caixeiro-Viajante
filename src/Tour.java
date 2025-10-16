@@ -1,13 +1,14 @@
 import algs4.Point2D;
 import algs4.StdDraw;
 import algs4.StdOut;
-import java.util.HashMap;
+import java.util.HashMap; 
+import java.util.Map;
+
 
 public class Tour {
 
     private static class Node {
         private Point point;
-        private Point2D point2D;
         private Node next;
     }
 
@@ -15,8 +16,7 @@ public class Tour {
     private int count;
     private final boolean useKdTree;
     private KdTree tree;
-    private HashMap<Point2D, Node> point2DToNodeMap;
-
+    private Map<Point2D, Node> pointToNodeMap;
 
     public Tour() {
         this(false);
@@ -28,7 +28,8 @@ public class Tour {
     this.count = 0;
     if (useKdTree) {
         this.tree = new KdTree();
-        this.point2DToNodeMap = new HashMap<>();
+        this.pointToNodeMap = new HashMap<>();
+
     }
 }
 
@@ -84,18 +85,17 @@ public class Tour {
 
     public void insertNearest(Point p) {
         if (useKdTree) {
-            insertNearestKd(p); // ainda não implementado
+            insertNearestKd(p); 
         } else {
             insertNearestNaive(p);
         }
     }
 
     public void insertNearestNaive(Point p) {
-        // <<< implementação correta >>>
         if (start == null) {
             start = new Node();
             start.point = p;
-            start.next = start; // circular
+            start.next = start; 
             count = 1;
             return;
         }
@@ -120,54 +120,40 @@ public class Tour {
 
         count++;
     }
-
+    
     public void insertNearestKd(Point p) {
-        Point2D newPoint2D = new Point2D(p.x(), p.y());
+        Point2D p2d = new Point2D(p.x(), p.y());
+
         if (start == null) {
             start = new Node();
             start.point = p;
-            start.point2D = newPoint2D;
             start.next = start; // circular
-            tree.insert(newPoint2D);
-            point2DToNodeMap.put(newPoint2D, start);
+
+
             count = 1;
+            tree.insert(p2d);
+            pointToNodeMap.put(p2d, start);
             return;
         }
 
-        // 1. Encontra o Point2D mais próximo via KdTree (rápido: O(log N))
-        Point2D nearestPoint2D = tree.nearest(newPoint2D);
+        // encontra o ponto mais próximo via KdTree
+        Point2D nearest2D = tree.nearest(p2d);
 
-        // 2. Encontra o NÓ correspondente via HashMap (super-rápido: O(1))
-        Node nearestNode = point2DToNodeMap.get(nearestPoint2D);
+        // percorre a lista circular para achar o Node correspondente
+        
+        Node nearestNode = pointToNodeMap.get(nearest2D);
 
-        // 3. Insere o novo nó após o vizinho mais próximo
+        // insere o novo ponto após o vizinho mais próximo
         Node newNode = new Node();
         newNode.point = p;
-        newNode.point2D = newPoint2D;
         newNode.next = nearestNode.next;
         nearestNode.next = newNode;
 
-        // 4. Atualiza as estruturas de dados
         count++;
-        tree.insert(newPoint2D);
-        point2DToNodeMap.put(newPoint2D, newNode); // Adiciona o novo mapeamento
+
+        // adiciona o ponto na KdTree
+        tree.insert(p2d);
+        pointToNodeMap.put(p2d, newNode);
     }
 
-
-    // Método de teste (opcional)
-    public static void main(String[] args) {
-        Tour tour = new Tour();
-        tour.insertNearest(new Point(1.0, 1.0));
-        tour.insertNearest(new Point(1.0, 4.0));
-        tour.insertNearest(new Point(4.0, 4.0));
-        tour.insertNearest(new Point(4.0, 1.0));
-
-        StdOut.println("# de pontos = " + tour.size());
-        StdOut.println("Comprimento = " + tour.length());
-        StdOut.println(tour);
-
-        StdDraw.setXscale(0, 6);
-        StdDraw.setYscale(0, 6);
-        tour.draw();
-    }
 }

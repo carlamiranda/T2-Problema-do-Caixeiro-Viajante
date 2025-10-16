@@ -17,7 +17,7 @@
  *  Dependências: Point, StdOut, StdDraw
  **************************************************************************** */
 
- import java.util.ArrayList;
+import java.util.ArrayList;
 import algs4.In;
 import algs4.StdDraw;
 import algs4.StdOut;
@@ -39,7 +39,8 @@ import algs4.StdOut;
  
         StdDraw.enableDoubleBuffering();
 
-        Tour nearest = new Tour();
+        // Tour nearest = new Tour();
+        Tour nearest = new Tour(true); // Ativando a Kd-Tree
 
         ArrayList<Point> points = new ArrayList<Point>();
 
